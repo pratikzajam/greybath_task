@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+
+<body>
+
+<?php 
+
+$user_id=$_GET['user_id'];
+?>
+
+
+
+<?php include('header.php');?>
+
+
+    <div class="d-flex justify-content-end">
+        <div class="toast bg-grey" role="alert" id="myToast" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto">Notifications</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+
+            </div>
+        </div>
+    </div>
+
+    <section class="d-flex align-items-center">
+        <div class="container my-6">
+            <div class="row d-flex justify-content-center ">
+                <div class="col-lg-6"> <!-- Add col-lg-6 class here -->
+                    <div class="text-center">
+                        <!-- <h1>Verify Email</h1> -->
+                        <h3>Please Enter Otp Sent On Your Registered email</h3>
+                    </div>
+                    <form class="border border-md bg-light rounded border-black p-4" id="otp_verify">
+                        
+                    <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label "><b>Enter Otp</b></label>
+                            <input type="text" class="form-control" name="otp" aria-describedby="emailHelp">
+                            <div class="text-danger" id="username-error"></div>
+                        </div>
+                       
+                        <input type="hidden" class="form-control" name="user_id" value="<?=$user_id?>" aria-describedby="emailHelp">
+                        
+                       <button type="submit" class="btn bg-black text-white">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+
+</body>
+<!-- Include jQuery library -->
+
+
+<!-- Ajax script -->
+<script>
+    $(document).ready(function() {
+        // Listen for form submission
+        $("#otp_verify").submit(function(event) {
+            // Prevent the default form submission behavior
+            event.preventDefault();
+
+            // Get the form data
+            var formData = $(this).serialize();
+
+            // Send the Ajax request
+            $.ajax({
+                type: "POST",
+                url: "action/otp_verify.php", // Replace with the URL of your server-side script to handle form submission
+                data: formData,
+                dataType: "json",
+                success: function(response) {
+                    // Handle the response from the server
+                    $("#myToast .toast-body").text(response.message);
+
+                    // Show the toast
+                    $("#myToast").toast('show');
+                   
+                    var user_id=response.user_id;
+                    console.log(response.user_id);
+
+                    console.log(response.response);
+
+                    if(response.response ==='y')
+                    {
+
+                        console.log("Redirecting..."); 
+                    setTimeout(function() {
+                        window.location.href ="login.php";
+                    }, 3000);
+                }
+
+
+
+                    // You can do something with the response, like displaying a success message
+                },
+                error: function(error) {
+                    // Handle any errors that occurred during the Ajax request
+                    // console.log("Error: " + error.responseText);
+
+                }
+            });
+        });
+    });
+</script>
+
+</html>
